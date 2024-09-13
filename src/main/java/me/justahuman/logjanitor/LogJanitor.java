@@ -51,6 +51,7 @@ public class LogJanitor {
         if (!(config.get(type) instanceof JsonObject configSection)) {
             JsonObject newSection = new JsonObject();
             newSection.addProperty(mixin, true);
+            config.add(type, newSection);
             return true;
         } else if (!(configSection.get(mixin) instanceof JsonPrimitive configValue)) {
             configSection.addProperty(mixin, true);
