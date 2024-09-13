@@ -5,7 +5,7 @@ of warnings, info lines, etc, that were always going to be in the log.
 
 LogJanitor goes about shrinking the log by trying to fix some of the problems or just hiding
 the log messages (whether casued by a "problem" or just an info message). All of the log suppresion
-is done through mixins and can be enabled/disabled indidually in the mod's config.
+is done either through fixing/adding assets or through mixins which can be enabled/disabled indidually in the mod's config.
 
 To change the config (if you want any surpressed messages not surpressed) you need to have launched your
 game completely at least once. It will generate the config once fully loaded and then if you edit
