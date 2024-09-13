@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.mojang.logging.LogUtils;
-import me.justahuman.logjanitor.mixin.MixinConfig;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -15,8 +14,6 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.List;
-import java.util.Map;
 
 @Mod("logjanitor")
 public class LogJanitor {
@@ -31,9 +28,7 @@ public class LogJanitor {
 
     public void setup(FMLClientSetupEvent event) {
         LOGGER.info("Log Janitor Loaded :D");
-        if (config.keySet().isEmpty()) {
-            saveDefaultConfig();
-        }
+        saveConfig();
     }
 
     public static void loadConfig() {
@@ -53,22 +48,23 @@ public class LogJanitor {
     }
 
     public static boolean isMixinEnabled(String type, String mixin) {
-        return !(config.get(type) instanceof JsonObject configSection)
-                || !(configSection.get(mixin) instanceof JsonPrimitive configValue)
-                || !configValue.isBoolean() || configValue.getAsBoolean();
+        if (!(config.get(type) instanceof JsonObject configSection)) {
+            JsonObject newSection = new JsonObject();
+            newSection.addProperty(mixin, true);
+            return true;
+        } else if (!(configSection.get(mixin) instanceof JsonPrimitive configValue)) {
+            configSection.addProperty(mixin, true);
+            return true;
+        } else if (!configValue.isBoolean()) {
+            configSection.addProperty(mixin, true);
+            return true;
+        } else {
+            return configValue.getAsBoolean();
+        }
     }
 
-    public static void saveDefaultConfig() {
-        Map<String, List<String>> sortedMixins = MixinConfig.getSortedMixins();
-        for (String type : sortedMixins.keySet()) {
-            JsonObject configSection = new JsonObject();
-            for (String mixin : sortedMixins.get(type)) {
-                configSection.addProperty(mixin, true);
-            }
-            config.add(type, configSection);
-        }
-
-        try(FileWriter writer = new FileWriter("config/logjanitor.json")) {
+    public static void saveConfig() {
+        try (FileWriter writer = new FileWriter("config/logjanitor.json")) {
             GSON.toJson(config, writer);
             writer.flush();
         } catch (Exception e) {
