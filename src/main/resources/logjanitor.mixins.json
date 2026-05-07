@@ -6,6 +6,7 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "everycomp.MDoorsModuleMixin",
+    "everycomp.UtilsMixin",
     "forge.GameDataMixin",
     "jei.PluginCallerMixin",
     "minecraft.LootManagerMixin",
